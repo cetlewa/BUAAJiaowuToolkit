@@ -3,8 +3,8 @@ from selenium import webdriver
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.common import alert
 
-userId = "19373533"
-userPwd = "Cms011120"
+userId = ""
+userPwd = ""
 cosId = "B3J063821"
 
 
