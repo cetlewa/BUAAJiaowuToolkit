@@ -73,7 +73,7 @@ def open_cos_page():
     s.select_by_value(cosSch)
     # hide conflict
     browser.find_element_by_name("pageYcctkc").click()
-    # # click search
+    # click search
     browser.find_element_by_class_name("addlist_button2.mt4").click()
     # time.sleep(0.5)
 
@@ -88,11 +88,12 @@ def locate_cos():
             (button_xpath, name_xpath) = genXpath(i)
             name_element = browser.find_element_by_xpath(name_xpath)
             if name_element.text == "电子商务":
-                button_element = browser.find_element_by_xpath(button_xpath)
-                button_element.click()
-                log(alert.text)
-                alert.accept()
-                break
+                # button_element = browser.find_element_by_xpath(button_xpath)
+                # button_element.click()
+                # log(alert.text)
+                # alert.accept()
+                # break
+                return (button_xpath, name_xpath)
         else:
             log("no such class")
     except:
@@ -109,8 +110,15 @@ while True:
         get_cos_type()
         login()
         open_cos_page()
+        (button_xpath, name_xpath) = locate_cos()
         while True:
-            locate_cos()
+            # click search
+            browser.find_element_by_class_name("addlist_button2.mt4").click()
+            # click select
+            browser.find_element_by_xpath(button_xpath).click()
+            # accept alert
+            log(alert.text)
+            alert.accept()
     except Exception as e:
         log(str(e))
         log("something wrong, reboot programme")
