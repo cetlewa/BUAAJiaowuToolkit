@@ -116,6 +116,7 @@ while True:
         open_cos_page()
         (button_xpath, id_xpath, name_xpath) = locate_cos()
         while True:
+            # insert info
             insert_info()
             # click search
             browser.find_element_by_class_name("addlist_button2.mt4").click()
