@@ -1,11 +1,12 @@
+import sys
 import time
 from selenium import webdriver
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.common import alert
 
-userId = ""
-userPwd = ""
-cosId = "B3J063821"
+userId = "******"
+userPwd = "******"
+cosId = "******"
 
 
 # F-核心通识 G-一般通识 I-核心专业 J-一般专业
@@ -15,7 +16,7 @@ cosTrd = "/html/body/div[7]/div/div[3]/table/tbody/tr/td[1]/ul/li[2]/a"
 
 jwxt_sso = "https://sso.buaa.edu.cn/login?service=http%3A%2F%2Fjwxt.buaa.edu.cn%3A8080%2Fieas2.1%2Fwelcome%3Ffalg%3D1"
 
-logName = cosId+".log"
+logName = cosId + ".log"
 
 
 def log(context):
@@ -68,32 +69,34 @@ def open_cos_page():
     # click third menu
     browser.find_element_by_link_text(cosTrd).click()
     # insert information
-    school = browser.find_element_by_name("pageKkyx")
-    s = Select(school)
-    s.select_by_value(cosSch)
-    # hide conflict
-    browser.find_element_by_name("pageYcctkc").click()
+    insert_info()
     # click search
     browser.find_element_by_class_name("addlist_button2.mt4").click()
     # time.sleep(0.5)
 
 def genXpath(index):
     button_xpath = "/html/body/div[7]/div/div[6]/table/tbody/tr[" + str(index) + "]/td[1]/div/a/span"
+    id_xpath = "/html/body/div[7]/div/div[6]/table/tbody/tr[" + str(index) + "]/td[3]"
     name_xpath = "/html/body/div[7]/div/div[6]/table/tbody/tr[" + str(index) + "]/td[4]/a"
-    return (button_xpath, name_xpath)
+    return (button_xpath, id_xpath, name_xpath)
+
+def insert_info():
+    # select cos school
+    school = browser.find_element_by_name("pageKkyx")
+    s = Select(school)
+    s.select_by_value(cosSch)
+    # hide conflict
+    conflict = browser.find_element_by_name("pageYcctkc")
+    if not conflict.is_selected():
+        conflict.click()
 
 def locate_cos():
     try:
         for i in range(2, 20):
-            (button_xpath, name_xpath) = genXpath(i)
-            name_element = browser.find_element_by_xpath(name_xpath)
-            if name_element.text == "电子商务":
-                # button_element = browser.find_element_by_xpath(button_xpath)
-                # button_element.click()
-                # log(alert.text)
-                # alert.accept()
-                # break
-                return (button_xpath, name_xpath)
+            (button_xpath, id_xpath, name_xpath) = genXpath(i)
+            id_element = browser.find_element_by_xpath(id_xpath)
+            if id_element.text == cosId:
+                return (button_xpath, id_xpath, name_xpath)
         else:
             log("no such class")
     except:
@@ -105,47 +108,28 @@ log("start")
 while True:
     # open browser
     option = webdriver.ChromeOptions()
+    option.add_argument('--headless')
     browser = webdriver.Chrome(chrome_options=option)
     try:
         get_cos_type()
         login()
         open_cos_page()
-        (button_xpath, name_xpath) = locate_cos()
+        (button_xpath, id_xpath, name_xpath) = locate_cos()
         while True:
+            insert_info()
             # click search
             browser.find_element_by_class_name("addlist_button2.mt4").click()
             # click select
             browser.find_element_by_xpath(button_xpath).click()
             # accept alert
+            alert = browser.switch_to.alert
             log(alert.text)
+            if alert.text == "选课成功":
+                sys.exit(0)
             alert.accept()
+            # time.sleep(1)
     except Exception as e:
         log(str(e))
         log("something wrong, reboot programme")
         browser.quit()
         pass
-
-
-# browser = webdriver.Chrome(chrome_options=webdriver.ChromeOptions())
-# get_cos_type()
-# login()
-# open_cos_page()
-# locate_cos()
-
-
-# flag = True
-    # while flag:
-    #     # 点击查询按钮
-    #     browser.find_element_by_class_name("addlist_button2.mt4").click()
-    #     # 找到人数，numbers = '57/80 对外:0/2'，字符串类型
-    #     # 这里找到自己那个课对剩余人数检查复制xpath
-    #     numbers = browser.find_element_by_xpath("/html/body/div[7]/div/div[6]/table/tbody/tr[13]/td[15]").text
-    #     # 对字符串找到对外剩余人数，number = 0
-    #     number = int(numbers.split(sep='/')[0])
-    #     print(number)
-    #     if number > 0:
-    #         # 点击选课按钮
-    #         # 这里复制对应课程的选课按钮的xpath
-    #         browser.find_element_by_xpath("/html/body/div[7]/div/div[6]/table/tbody/tr[25]/td[1]/div").click()
-    #         flag = False
-    #         print("Got it")

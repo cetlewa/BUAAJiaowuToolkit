@@ -42,8 +42,8 @@ def grabcoures():
     browser.get("http://jwxt.buaa.edu.cn:8080/ieas2.1")
     browser.find_element_by_xpath('//*[@id="notice"]/div[2]/div[1]/p[2]/input').click()
     wait.until(EC.frame_to_be_available_and_switch_to_it(browser.find_element_by_id('loginIframe')))
-    USER_NAME = '' #填账号
-    USER_PASSWORD = '' #填密码
+    USER_NAME = '*******' #填账号
+    USER_PASSWORD = '******' #填密码
     browser.find_element_by_id("unPassword").send_keys(USER_NAME)
     browser.find_element_by_id("pwPassword").send_keys(USER_PASSWORD)
     browser.find_element_by_xpath('//*[@id="content-con"]/div[1]/div[7]/input').click()
@@ -71,7 +71,7 @@ def grabcoures():
     response = requests.get(list_url, cookies=cookies)
     text = response.text
     payload = _get_hidden_items2(text)
-    course = 'B3J063821' #课程编号
+    course = '******' #课程编号
     #course = 'B3J063890' #for example
     rwh = '' + course + '' #rwh
     #rwh = '2021-2022-1-' + course + '-001' #for example
